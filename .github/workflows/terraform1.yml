@@ -37,6 +37,9 @@ jobs:
     - name: Configure GCP authentication
       run: export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json
 
+    - name: Check GCP credentials
+      run: cat $HOME/gcloud.json
+
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run: terraform init
