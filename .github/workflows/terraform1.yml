@@ -60,8 +60,4 @@ jobs:
       run: terraform apply -auto-approve -input=false -var="credentials_file=infrastructure/data/credentials.json"
       working-directory: infrastructure/terraform
       env:
-<<<<<<< HEAD
         GOOGLE_APPLICATION_CREDENTIALS: infrastructure/data/credentials.json
-=======
-        GOOGLE_APPLICATION_CREDENTIALS: infrastructure/data/credentials.json
->>>>>>> 46390f53a13dec6ac88f2db4b8934689fea9a3ce
