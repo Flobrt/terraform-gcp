@@ -42,6 +42,10 @@ jobs:
     - name: Check GCP credentials
       run: cat $HOME/gcloud.json
 
+    - name: Wait for 15 seconds
+      run: sleep 15
+
+
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run: terraform init
