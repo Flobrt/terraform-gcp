@@ -74,6 +74,13 @@ jobs:
       with:
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
+    # Export GCP credentials from secret
+    - name: Set up GCP credentials
+      run: echo "${{ secrets.GCP_CREDENTIALS }}" > $HOME/gcloud.json
+
+    - name: Configure GCP authentication
+      run: export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json
+
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run: terraform init
