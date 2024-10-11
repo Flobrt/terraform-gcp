@@ -13,7 +13,7 @@ variable "credentials_file" {
 }
 
 provider "google" {
-  credentials = var.credentials_file
+  credentials = file(var.credentials_file)
 }
 
 
