@@ -7,7 +7,7 @@ terraform {
     }
 }
 
-variable "credentials_file" {
+variable "GOOGLE_APPLICATION_CREDENTIALS" {
   description = "Path to the GCP credentials JSON file"
   type        = string
 }
