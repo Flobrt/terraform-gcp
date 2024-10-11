@@ -35,7 +35,7 @@ jobs:
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}  # Passer le secret ici
       run: |
-        echo "${GCP_CREDENTIALS}" > gcloud_credentials.json"
+        echo "${GCP_CREDENTIALS}" > gcloud_credentials.json
 
     - name: Check GCP credentials
       run: cat gcloud_credentials.json
