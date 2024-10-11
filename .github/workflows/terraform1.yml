@@ -32,13 +32,13 @@ jobs:
 
     # Export GCP credentials from secret
     - name: Set up GCP credentials
-      env:
-        GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}  # Passer le secret ici
       run: |
-        echo "${GCP_CREDENTIALS}" > "$HOME/gcloud_credentials.json"
+        echo "${{secrets.GCP_CREDENTIALS }}" > $HOME/gcloud_credentials.json
+
+    - name: Configure GCP authentication
+      run: export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud_credentials.json
 
     - name: Check GCP credentials
-  
       run: cat "$HOME/gcloud_credentials.json"
 
     - name: Wait for 15 seconds
