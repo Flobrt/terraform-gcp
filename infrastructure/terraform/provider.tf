@@ -15,7 +15,7 @@ variable "credentials_file" {
 credentials_file = jsondecode(env("GCP_CREDENTIALS"))
 
 provider "google" {
-  credentials = file(var.credentials_file)
+  credentials = jsondecode(env("GCP_CREDENTIALS"))
 }
 
 
