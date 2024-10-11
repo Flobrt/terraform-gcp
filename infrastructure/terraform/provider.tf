@@ -12,6 +12,8 @@ variable "credentials_file" {
   type        = string
 }
 
+google_credentials = jsondecode(env("GOOGLE_CREDENTIALS"))
+
 provider "google" {
   credentials = file(var.credentials_file)
 }
