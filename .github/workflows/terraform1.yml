@@ -32,15 +32,13 @@ jobs:
 
     # Export GCP credentials from secret
     - name: Set up GCP credentials
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}  # Passer le secret ici
       run: |
-          echo "${{ secrets.GCP_CREDENTIALS }}" > $HOME/gcloud.json
-          echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json" >> $GITHUB_ENV
-
-    - name: Configure GCP authentication
-      run: export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json
+        echo "${GCP_CREDENTIALS}" > gcloud_credentials.json"
 
     - name: Check GCP credentials
-      run: cat $HOME/gcloud.json
+      run: cat gcloud_credentials.json
 
     - name: Wait for 15 seconds
       run: sleep 15
@@ -54,14 +52,14 @@ jobs:
     # Generates an execution plan for Terraform
     # Planifier Terraform
     - name: Terraform Plan
-      run: terraform plan -input=false -var="credentials_file=/home/runner/gcloud.json"
+      run: terraform plan -input=false -var="credentials_file=gcloud_credentials.json"
       working-directory: infrastructure/terraform
       
       # On push to "main", build or change infrastructure according to Terraform configuration files
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
     - name: Terraform Apply
       if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
-      run: terraform apply -auto-approve -input=false -var="credentials_file=$HOME/gcloud.json"
+      run: terraform apply -auto-approve -input=false -var="credentials_file=gcloud_credentials.json"
       working-directory: infrastructure/terraform
 
 # name: 'Terraform'
