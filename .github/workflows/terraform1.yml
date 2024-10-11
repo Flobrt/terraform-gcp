@@ -44,7 +44,7 @@ jobs:
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
-      run: terraform plan -input=false -var="credentials_file=$HOME/gcloud.json"e
+      run: terraform plan -input=false -var="credentials_file=$HOME/gcloud.json"
       working-directory: infrastructure/terraform
       
       # On push to "main", build or change infrastructure according to Terraform configuration files
