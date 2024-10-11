@@ -13,7 +13,7 @@ variable "credentials_file" {
 }
 
 provider "google" {
-  credentials = jsondecode(var.credentials_file)
+  credentials = var.credentials_file
 }
 
 
