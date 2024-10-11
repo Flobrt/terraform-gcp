@@ -1,3 +1,67 @@
+# name: 'Terraform'
+
+# on:
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+
+# permissions:
+#   contents: read
+
+# jobs:
+#   terraform:
+#     name: 'Terraform'
+#     runs-on: ubuntu-latest
+#     environment: production
+
+#     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+#     defaults:
+#       run:
+#         shell: bash
+
+#     steps:
+#     # Checkout the repository to the GitHub Actions runner
+#     - name: Checkout
+#       uses: actions/checkout@v4
+
+#     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+#     - name: Setup Terraform
+#       uses: hashicorp/setup-terraform@v1
+#       with:
+#         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+#     # Export GCP credentials from secret
+#     - name: Set up GCP credentials
+#       run: echo "${{ secrets.GCP_CREDENTIALS }}" > infrastructure/data/credentials.json
+
+#     - name: Configure GCP authentication
+#       run: export GOOGLE_APPLICATION_CREDENTIALS=infrastructure/data/credentials.json
+
+#     - name: Check GCP credentials
+#       run: cat infrastructure/data/credentials.json
+
+#     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+#     - name: Terraform Init
+#       run: terraform init
+#       working-directory: infrastructure/terraform
+
+#     # Generates an execution plan for Terraform
+#     # Planifier Terraform
+#     - name: Terraform Plan
+#       run: terraform plan -input=false -var="credentials_file=infrastructure/data/credentials.json"
+#       working-directory: infrastructure/terraform
+#       env:
+#         GOOGLE_APPLICATION_CREDENTIALS: infrastructure/data/credentials.json
+      
+#       # On push to "main", build or change infrastructure according to Terraform configuration files
+#       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+#     - name: Terraform Apply
+#       if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
+#       run: terraform apply -auto-approve -input=false -var="credentials_file=infrastructure/data/credentials.json"
+#       working-directory: infrastructure/terraform
+#       env:
+#         GOOGLE_APPLICATION_CREDENTIALS: infrastructure/data/credentials.json
+
 name: 'Terraform'
 
 on:
@@ -14,50 +78,44 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
 
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
         shell: bash
 
     steps:
-    # Checkout the repository to the GitHub Actions runner
+    # Étape 1: Récupérer le dépôt
     - name: Checkout
       uses: actions/checkout@v4
 
-    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    # Étape 2: Installer Terraform CLI et configurer le fichier de configuration avec le token d'API Terraform Cloud
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-    # Export GCP credentials from secret
-    - name: Set up GCP credentials
-      run: echo "${{ secrets.GCP_CREDENTIALS }}" > infrastructure/data/credentials.json
+    # Étape 3: Définir la variable d'environnement pour les credentials GCP
+    - name: Set GCP Credentials
+      run: |
+        echo "${{ secrets.GCP_CREDENTIALS }}" > $HOME/gcloud.json
+        echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json" >> $GITHUB_ENV
 
-    - name: Configure GCP authentication
-      run: export GOOGLE_APPLICATION_CREDENTIALS=infrastructure/data/credentials.json
-
-    - name: Check GCP credentials
-      run: cat infrastructure/data/credentials.json
-
-    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    # Étape 4: Initialiser Terraform
     - name: Terraform Init
       run: terraform init
       working-directory: infrastructure/terraform
 
-    # Generates an execution plan for Terraform
-    # Planifier Terraform
+    # Étape 5: Planifier l'exécution Terraform
     - name: Terraform Plan
-      run: terraform plan -input=false -var="credentials_file=infrastructure/data/credentials.json"
+      run: terraform plan -input=false -var="credentials_file=$HOME/gcloud.json"
       working-directory: infrastructure/terraform
       env:
-        GOOGLE_APPLICATION_CREDENTIALS: infrastructure/data/credentials.json
-      
-      # On push to "main", build or change infrastructure according to Terraform configuration files
-      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+        GOOGLE_APPLICATION_CREDENTIALS: $HOME/gcloud.json
+
+    # Étape 6: Appliquer les changements Terraform sur la branche "main"
     - name: Terraform Apply
-      if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
-      run: terraform apply -auto-approve -input=false -var="credentials_file=infrastructure/data/credentials.json"
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: terraform apply -auto-approve -input=false -var="credentials_file=$HOME/gcloud.json"
       working-directory: infrastructure/terraform
       env:
-        GOOGLE_APPLICATION_CREDENTIALS: infrastructure/data/credentials.json
+        GOOGLE_APPLICATION_CREDENTIALS: $HOME/gcloud.json
+
