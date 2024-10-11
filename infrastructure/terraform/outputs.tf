@@ -36,7 +36,7 @@
 
 resource "google_storage_bucket_object" "zip_bronze" {
     name         = "code/bronze/zip/ingestion.zip"
-    source       = "/home/florian/code/brief-terraform/data-services/ingestion/zip/ingestion.zip"
+    source       = "/home/flo/Documents/code/terraform-gcp/data-services/ingestion/zip/ingestion.zip"
     content_type = "text/plain"
     bucket       = google_storage_bucket.my_bucket.id
 }

@@ -7,13 +7,9 @@ terraform {
     }
 }
 
-variable "credentials_file" {
-  type = string
-}
-
 provider "google" {
     project = "terraform-etl"
-    credentials = file(var.credentials_file)
+    credentials = file("../data/credentials.json")
 }
 
 resource "google_project_service" "run_api" {
