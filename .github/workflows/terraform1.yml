@@ -38,7 +38,7 @@ jobs:
         echo "${GCP_CREDENTIALS}" > $HOME/gcloud_credentials.json
 
     - name: Check GCP credentials
-      run: cat gcloud_credentials.json
+      run: cat $HOME/gcloud_credentials.json
 
     - name: Wait for 15 seconds
       run: sleep 15
