@@ -12,8 +12,6 @@ variable "credentials_file" {
   type        = string
 }
 
-credentials_file = jsondecode(env("GCP_CREDENTIALS"))
-
 provider "google" {
   credentials = jsondecode(env("GCP_CREDENTIALS"))
 }
