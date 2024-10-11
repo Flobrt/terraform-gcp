@@ -7,10 +7,20 @@ terraform {
     }
 }
 
-provider "google" {
-    project = "terraform-etl"
-    credentials = file("../data/credentials.json")
+variable "credentials_file" {
+  description = "Path to the GCP credentials JSON file"
+  type        = string
 }
+
+provider "google" {
+  credentials = file(var.credentials_file)
+}
+
+
+# provider "google" {
+#     project = "terraform-etl"
+#     credentials = file("../data/credentials.json")
+# }
 
 resource "google_project_service" "run_api" {
   project = "terraform-etl"  # Remplace par ton ID de projet
