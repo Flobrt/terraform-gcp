@@ -32,7 +32,7 @@ jobs:
 
     # Export GCP credentials from secret
     - name: Set up GCP credentials
-      run: echo "${{ secrets.GCP_CREDENTIALS }}" > $HOME/gcloud.json
+      run: echo "${{ secrets.GCP_CREDENTIALS }}" | tr -d '\r' > $HOME/gcloud.json
 
     - name: Configure GCP authentication
       run: export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json
@@ -46,9 +46,12 @@ jobs:
       working-directory: infrastructure/terraform
 
     # Generates an execution plan for Terraform
+    # Planifier Terraform
     - name: Terraform Plan
       run: terraform plan -input=false -var="credentials_file=$HOME/gcloud.json"
       working-directory: infrastructure/terraform
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: $HOME/gcloud.json
       
       # On push to "main", build or change infrastructure according to Terraform configuration files
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
